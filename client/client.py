@@ -19,3 +19,9 @@ except:
 # 3. the client receives an XML response from server
 # 4. the client parses the XML response, and store data inside output file, if any
 # 5. terminate
+hostname = socket.gethostname()
+port = 12345
+csocket = socket.socket()
+csocket.connect(hostname, port)
+csocket.sendfile(query_file)
+reply = csocket.recv(1024)
