@@ -1,0 +1,14 @@
+<!-- update Cabin='G6' where Sex = 'male' and Parch = '2' -->
+<query>
+   <type>update</type>
+   <columns>
+      <column>Cabin</column>
+      <value>G6</value>
+   </columns>
+   <conditions>
+      <column>Sex</column>
+      <value>male</value>
+      <column>Parch</column>
+      <value>2</value>
+   </conditions>
+</query>

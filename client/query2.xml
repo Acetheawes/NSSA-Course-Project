@@ -1,0 +1,14 @@
+<!-- select Survived,Name where Sex = 'male' and Embarked='Q' -->
+<query>
+   <type>select</type>
+   <columns>
+      <column>Name</column>
+      <column>Survived</column>
+   </columns>
+   <conditions>
+      <column>Sex</column>
+      <value>male</value>
+      <column>Embarked</column>
+      <value>Q</value>
+   </conditions>
+</query>

@@ -1,0 +1,13 @@
+<!-- select Cabin, Parch where Sex = 'male' and Parch = '2' -->
+<query>
+   <type>select</type>
+   <columns>
+      <column>Cabin</column>
+   </columns>
+   <conditions>
+      <column>Sex</column>
+      <value>male</value>
+      <column>Parch</column>
+      <value>2</value>
+   </conditions>
+</query>

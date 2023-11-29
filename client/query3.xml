@@ -1,0 +1,11 @@
+<!-- select Name where sex = 'female' -->
+<query>
+   <type>select</type>
+   <columns>
+      <column>Name</column>
+   </columns>
+   <conditions>
+      <column>sex</column>
+      <value>female</value>
+   </conditions>
+</query>
