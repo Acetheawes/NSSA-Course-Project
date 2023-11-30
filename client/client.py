@@ -13,15 +13,27 @@ except:
     exit(1)  
 
 # student code starts here
+hostname = socket.gethostname()
+port = 12345
+clientsocket = socket.socket()
+clientsocket.connect((hostname, port))
+clientsocket.send(query_file.encode())
+reply = clientsocket.recv(1024)
+print(reply.decode())
+clientsocket.close()
+
+
+
+
+
+
+
+
+
+
 # remember that:
 # 1. the client read an XML query (already done above)
 # 2. the client sends an XML query to the server       
 # 3. the client receives an XML response from server
 # 4. the client parses the XML response, and store data inside output file, if any
 # 5. terminate
-hostname = socket.gethostname()
-port = 12345
-csocket = socket.socket()
-csocket.connect(hostname, port)
-csocket.sendfile(query_file)
-reply = csocket.recv(1024)

@@ -1,7 +1,7 @@
 # server.py
 import socket
 import pandas as pd
-import xml
+import xml.etree.ElementTree as et
 
 # student code starts here
 # Remember that:
@@ -11,16 +11,23 @@ import xml
 # 4. the server creates the XML response
 # 5. the server sends the XML response to the client
 # terminate
-
-def readXML(xmlfile):
-    with open(xmlfile).read() as file:
-        
-
-
-
-
-df = pd.read_csv("/home/ace/college/y2s1/nssa220/project/server/data.csv")
-host_name = socket.gethostname()
+hostname = socket.gethostname()
 port = 12345
-ssock = socket.socket()
-ssock.bind(host_name, port)
+serversocket = socket.socket()
+serversocket.bind((hostname, port))
+serversocket.listen()
+connection, address = serversocket.accept()
+print('con', str(address))
+while True:
+    data = connection.recv(1024)
+    if not data:
+        break
+    print('recieved: ', data.decode())
+    msg = 'fuck off'
+    connection.send(msg.encode())
+connection.close()
+
+def parse(content):
+    tree = et.parse(content)
+    root = tree.getroot()
+    
