@@ -13,14 +13,15 @@ except:
     exit(1)  
 
 # student code starts here
-hostname = socket.gethostname()
+
+host_name = socket.gethostname()
 port = 12345
-clientsocket = socket.socket()
-clientsocket.connect((hostname, port))
-clientsocket.send(query_file.encode())
-reply = clientsocket.recv(1024)
-print(reply.decode())
-clientsocket.close()
+client_socket = socket.socket()
+client_socket.connect((host_name, port))
+client_socket.send(query_file.encode())
+
+reply = client_socket.recv(1024)
+print (reply.decode())
 
 
 
