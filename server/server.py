@@ -44,15 +44,18 @@ server_socket.listen()
 con, addr = server_socket.accept()
 print("connection from ", str(addr))
 
+#what to do when recieving the xml file
 while True: 
     data = con.recv(1024)
     if not data: 
         break
-    print("recieved")
-    query_type = get_type(data.decode())
-    query_columns = get_columns(data.decode())
-    query_conditions = get_conditions(data.decode())
-    print(query_type)
-    # con.send(msg.encode())
+    query = data.decode()
+    msg = 'recieved'
+    con.send(msg.encode())
+    query_type = get_type(query)
+    query_columns = get_columns(query)
+    query_conditions = get_conditions(query)
+    print(query_conditions)
 con.close()
+
 
