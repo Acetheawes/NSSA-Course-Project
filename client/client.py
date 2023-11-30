@@ -4,21 +4,23 @@ import pandas as pd
 
 print('reading the input query ...')
 
-try:
-    query_file = sys.argv[1]
-    xml_query = open(query_file).read()
-    output_file = sys.argv[2]
-except:
-    print("Error")
-    exit(1)  
+# try:
+#     query_file = sys.argv[1]
+#     xml_query = open(query_file).read()
+#     output_file = sys.argv[2]
+# except:
+#     print("Error")
+#     exit(1)  
 
+query_file = sys.argv[1]
 # student code starts here
+msg = query_file
 
 host_name = socket.gethostname()
 port = 12345
 client_socket = socket.socket()
 client_socket.connect((host_name, port))
-client_socket.send(query_file.encode())
+client_socket.send(msg.encode())
 
 reply = client_socket.recv(1024)
 print (reply.decode())
