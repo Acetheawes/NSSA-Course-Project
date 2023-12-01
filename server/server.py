@@ -60,20 +60,17 @@ print("connection from ", str(addr))
 
 #what to do when recieving the xml file
 while True: 
-    data = con.recv(1024)
+    data = con.recv(4096)
     if not data: 
         break
     msg = 'recieved'
     con.send(msg.encode())
     query = data.decode()
-    q_type = get_type(data)
-    print(q_type)
-
-     
-
-    
-
-
+    query_type = get_type(data)
+    query_columns = get_columns(data)
+    query_conditions = get_conditions(data)
+    result = filter_columns(df, query_conditions, query_columns)
+    print(result)
 con.close()
 
 

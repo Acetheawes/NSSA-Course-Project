@@ -1,5 +1,6 @@
 import socket
 import sys
+import os
 import pandas as pd
 
 print('reading the input query ...')
@@ -13,8 +14,9 @@ print('reading the input query ...')
 #     exit(1)  
 
 query_file = sys.argv[1]
+query_path = os.path.abspath(query_file)
 # student code starts here
-msg = query_file
+msg = query_path
 
 host_name = socket.gethostname()
 port = 12345
@@ -22,7 +24,7 @@ client_socket = socket.socket()
 client_socket.connect((host_name, port))
 client_socket.send(msg.encode())
 
-reply = client_socket.recv(1024)
+reply = client_socket.recv(4096)
 print (reply.decode())
 
 
