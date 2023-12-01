@@ -12,6 +12,8 @@ import xml.etree.ElementTree as ET
 # 5. the server sends the XML response to the client
 # terminate
 
+df = pd.read_csv('/home/ace/college/y2s1/nssa220/project/server/data.csv')
+
 #Defining Essential Functions
 def get_values(root, parent, child):
     lst = []
@@ -33,9 +35,21 @@ def get_columns(filename):
     root = (ET.parse(filename)).getroot()
     column_list = get_values(root, 'columns', 'column')
     return column_list
+def filter_columns(dataframe, conditions, columns):
+    filtered_df = dataframe
+    for column, value in conditions.items():
+        filtered_df=filtered_df[filtered_df[column] == value]
+        return filtered_df[columns]
+
+# with open('/home/ace/college/y2s1/nssa220/project/client/query1.xml') as query: 
+# query = '/home/ace/college/y2s1/nssa220/project/client/query1.xml'
+# query_type = get_type(query)
+# query_conditions = get_conditions(query)
+# query_columns = get_columns(query)
+# print (filter_columns(df, query_conditions, query_columns))
 
 
-#Server Establishes Itself
+# Server Establishes Itself
 hostname = socket.gethostname()
 port = 12345
 server_socket = socket.socket()
@@ -49,13 +63,17 @@ while True:
     data = con.recv(1024)
     if not data: 
         break
-    query = data.decode()
     msg = 'recieved'
     con.send(msg.encode())
-    query_type = get_type(query)
-    query_columns = get_columns(query)
-    query_conditions = get_conditions(query)
-    print(query_conditions)
+    query = data.decode()
+    q_type = get_type(data)
+    print(q_type)
+
+     
+
+    
+
+
 con.close()
 
 

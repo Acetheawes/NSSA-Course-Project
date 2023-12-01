@@ -25,7 +25,8 @@ def get_columns(filename):
     column_list = get_values(root, 'columns', 'column')
     return column_list
 
-
+qtype = get_type(query1)
+print(qtype)
 conditions = get_conditions(query1)
 columns = get_columns(query1)
 
@@ -34,7 +35,6 @@ def filter_columns(dataframe, conditions, columns):
     for column, value in conditions.items():
         filtered_df=filtered_df[filtered_df[column] == value]
         return filtered_df[columns]
-
 
 print(filter_columns(df, conditions, columns))
 

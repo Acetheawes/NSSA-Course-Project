@@ -26,7 +26,11 @@ def get_columns(filename):
     root = (ET.parse(filename)).getroot()
     column_list = get_values(root, 'columns', 'column')
     return column_list
-print(get_conditions(filepath))
+cols = get_columns(filepath)
+conditions = get_conditions(filepath)
+qtype = get_type(filepath)
+
+print(conditions)
 
 
     
