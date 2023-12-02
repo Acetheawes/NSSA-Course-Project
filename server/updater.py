@@ -1,4 +1,3 @@
-# server.py
 import socket
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -14,6 +13,7 @@ import os
 # terminate
 
 df = pd.read_csv('/home/ace/college/y2s1/nssa220/project/server/data.csv')
+query = '/home/ace/college/y2s1/nssa220/project/client/query4.xml'
 
 #Defining Essential Functions
 def get_values(root, parent, child):
@@ -42,56 +42,24 @@ def filter_columns(dataframe, conditions, columns):
         filtered_df=filtered_df[filtered_df[column] == value]
     return pd.DataFrame(filtered_df[columns])
 def dataframe_to_xml(df, xml_file_path='output.xml'):
+
     xml_data = df.to_xml()
 
     with open(xml_file_path, 'w') as xml_file:
         xml_file.write(xml_data)
 
     return (os.path.abspath(xml_file_path))
-
-# with open('/home/ace/college/y2s1/nssa220/project/client/query1.xml') as query: 
-# query = '/home/ace/college/y2s1/nssa220/project/client/query1.xml'
-# query_type = get_type(query)
-# query_conditions = get_conditions(query)
-# query_columns = get_columns(query)
-# print (filter_columns(df, query_conditions, query_columns))
-
-
-# Server Establishes Itself
-hostname = socket.gethostname()
-port = 12345
-server_socket = socket.socket()
-server_socket.bind((hostname, port))
-server_socket.listen()
-con, addr = server_socket.accept()
-print("connection from ", str(addr))
-
-#what to do when recieving the xml file
-while True: 
-    data = con.recv(4096)
-    if not data: 
-        break
-    query = data.decode()
-    query_type = get_type(data)
-    query_columns = get_columns(data)
-    query_conditions = get_conditions(data)
-    if (query_type == 'select'):
-        print ("select type query")
-        result = filter_columns(df, query_conditions, query_columns)
-        output = dataframe_to_xml(result)
-        con.send(output.encode())
-    elif (query_type == 'update'):
-        print('update type query')
-        msg = "sorry chad. We don't have update functionality yet"
-        con.send(msg.encode())
-con.close()
-    # if (query_type == 'select'):
-    #     result = filter_columns(df, query_conditions, query_columns)
-    #     output = dataframe_to_xml(result)
-    #     con.send(output.encode())
-    # elif (query_type == 'update'):
-    #     pass
+def get_updates(filename):
+    root = (ET.parse(filename)).getroot()
+    condition_col_list = get_values(root, 'columns', 'column')
+    condition_val_list = get_values(root, 'columns', 'value')
+    condition_dict = dict(zip(condition_col_list, condition_val_list))
+    return condition_dict
 
 
+dict = {'key':'val'}
+# print(dict.get('key'))
 
-
+query_type = get_type(query)
+query_conditions = get_conditions(query)
+query_updates = get_updates(query)
