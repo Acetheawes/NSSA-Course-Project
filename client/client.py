@@ -8,6 +8,11 @@ def get_type(filename):
     root = tree.getroot()
     type_element = root.find('type')
     return type_element.text
+def get_response(filename):
+    tree = ET.parse(filename)
+    root = tree.getroot()
+    type_element = root.find('status')
+    return type_element.text
 
 print('reading the input query ...')
 
@@ -19,10 +24,9 @@ print('reading the input query ...')
 #     print("Error")
 #     exit(1)  
 
-query_file = ('query5.xml')
-outfile = ('output.csv')
+query_file = sys.argv[1]
 query_path = os.path.abspath(query_file)
-outpath = os.path.abspath(outfile)
+
 # student code starts here
 qtype  = (get_type(query_path))
 msg = query_path
@@ -32,15 +36,17 @@ port = 12345
 client_socket = socket.socket()
 client_socket.connect((host_name, port))
 client_socket.send(msg.encode())
-if (qtype == 'select'):
+if (qtype == 'select' and len(sys.argv) == 3):
+    outfile = sys.argv[2]
+    outpath = os.path.abspath(outfile)
     print('sending select query')
     reply = client_socket.recv(4096)
     data = pd.read_xml(reply.decode())
     data.to_csv(outpath)
-elif (qtype == 'update'):
+elif (qtype == 'update' and len(sys.argv) == 2):
     print('sending update query')
     reply = client_socket.recv(4096)
-    print(reply.decode())
+    print(get_response(reply.decode()))
 
 
 
