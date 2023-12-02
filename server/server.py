@@ -2,6 +2,7 @@
 import socket
 import pandas as pd
 import xml.etree.ElementTree as ET
+import os
 
 # student code starts here
 # Remember that:
@@ -39,7 +40,14 @@ def filter_columns(dataframe, conditions, columns):
     filtered_df = dataframe
     for column, value in conditions.items():
         filtered_df=filtered_df[filtered_df[column] == value]
-        return filtered_df[columns]
+    return pd.DataFrame(filtered_df[columns])
+def dataframe_to_xml(df, xml_file_path='output.xml'):
+    xml_data = df.to_xml()
+
+    with open(xml_file_path, 'w') as xml_file:
+        xml_file.write(xml_data)
+
+    return (os.path.abspath(xml_file_path))
 
 # with open('/home/ace/college/y2s1/nssa220/project/client/query1.xml') as query: 
 # query = '/home/ace/college/y2s1/nssa220/project/client/query1.xml'
@@ -51,7 +59,7 @@ def filter_columns(dataframe, conditions, columns):
 
 # Server Establishes Itself
 hostname = socket.gethostname()
-port = 12345
+port = 12346
 server_socket = socket.socket()
 server_socket.bind((hostname, port))
 server_socket.listen()
@@ -63,14 +71,20 @@ while True:
     data = con.recv(4096)
     if not data: 
         break
-    msg = 'recieved'
-    con.send(msg.encode())
     query = data.decode()
     query_type = get_type(data)
     query_columns = get_columns(data)
     query_conditions = get_conditions(data)
     result = filter_columns(df, query_conditions, query_columns)
-    print(result)
+    output = dataframe_to_xml(result)
+    con.send(output.encode())
+    # if (query_type == 'select'):
+    #     result = filter_columns(df, query_conditions, query_columns)
+    #     output = dataframe_to_xml(result)
+    #     con.send(output.encode())
+    # elif (query_type == 'update'):
+    #     pass
+
 con.close()
 
 

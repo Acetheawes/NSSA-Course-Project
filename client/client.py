@@ -13,19 +13,22 @@ print('reading the input query ...')
 #     print("Error")
 #     exit(1)  
 
-query_file = sys.argv[1]
+query_file = ('query1.xml')
+outfile = ('output.csv')
 query_path = os.path.abspath(query_file)
+outpath = os.path.abspath(outfile)
 # student code starts here
 msg = query_path
 
 host_name = socket.gethostname()
-port = 12345
+port = 12346
 client_socket = socket.socket()
 client_socket.connect((host_name, port))
 client_socket.send(msg.encode())
 
 reply = client_socket.recv(4096)
-print (reply.decode())
+data = pd.read_xml(reply.decode())
+data.to_csv(outpath)
 
 
 

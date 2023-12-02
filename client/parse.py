@@ -30,7 +30,9 @@ cols = get_columns(filepath)
 conditions = get_conditions(filepath)
 qtype = get_type(filepath)
 
-print(conditions)
+filepath = '/home/ace/college/y2s1/nssa220/project/client/output.xml'
+df = pd.read_xml(filepath)
+df.to_csv('/home/ace/college/y2s1/nssa220/project/client/output.csv', index=True)
 
 
     
