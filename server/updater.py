@@ -11,9 +11,9 @@ import os
 # 4. the server creates the XML response
 # 5. the server sends the XML response to the client
 # terminate
-
-df = pd.read_csv('/home/ace/college/y2s1/nssa220/project/server/data.csv')
-query = '/home/ace/college/y2s1/nssa220/project/client/query4.xml'
+df_filepath = 'data.csv'
+df1 = pd.read_csv('data2.csv')
+query = '/home/ace/college/y2s1/nssa220/project/client/query5.xml'
 
 #Defining Essential Functions
 def get_values(root, parent, child):
@@ -27,7 +27,7 @@ def get_type(filename):
     type_element = root.find('type')
     return type_element.text
 def get_conditions(filename):
-    root = (ET.parse(filename)).getroot()
+    root = ET.parse(filename).getroot()
     condition_col_list = get_values(root, 'conditions', 'column')
     condition_val_list = get_values(root, 'conditions', 'value')
     condition_dict = dict(zip(condition_col_list, condition_val_list))
@@ -55,11 +55,36 @@ def get_updates(filename):
     condition_val_list = get_values(root, 'columns', 'value')
     condition_dict = dict(zip(condition_col_list, condition_val_list))
     return condition_dict
+def update_df(df, conditions, updates):
+    df_copy = df.copy()
+    mask = pd.Series([True] * len(df))
+    for col, value in conditions.items():
+        mask &= (df[col] == value)
+    df.loc[mask, list(updates.keys())] = list(updates.values())
+    is_updated = not df.equals(df_copy)
+    return is_updated
 
 
-dict = {'key':'val'}
-# print(dict.get('key'))
 
 query_type = get_type(query)
 query_conditions = get_conditions(query)
 query_updates = get_updates(query)
+
+df2_filepath = 'data3.csv'
+
+conditions = {'Name': 'Alice'}
+update_columns = {'Age', 69}
+
+updated = update_df(df1, conditions, update_columns)
+
+if updated:
+    print('yes')
+else: print('no')
+
+
+
+
+
+
+
+

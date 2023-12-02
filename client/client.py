@@ -2,6 +2,12 @@ import socket
 import sys
 import os
 import pandas as pd
+import xml.etree.ElementTree as ET
+def get_type(filename):
+    tree = ET.parse(filename)
+    root = tree.getroot()
+    type_element = root.find('type')
+    return type_element.text
 
 print('reading the input query ...')
 
@@ -13,22 +19,30 @@ print('reading the input query ...')
 #     print("Error")
 #     exit(1)  
 
-query_file = ('query1.xml')
+query_file = ('query5.xml')
 outfile = ('output.csv')
 query_path = os.path.abspath(query_file)
 outpath = os.path.abspath(outfile)
 # student code starts here
+qtype  = (get_type(query_path))
 msg = query_path
 
 host_name = socket.gethostname()
-port = 12346
+port = 12345
 client_socket = socket.socket()
 client_socket.connect((host_name, port))
 client_socket.send(msg.encode())
+if (qtype == 'select'):
+    print('sending select query')
+    reply = client_socket.recv(4096)
+    data = pd.read_xml(reply.decode())
+    data.to_csv(outpath)
+elif (qtype == 'update'):
+    print('sending update query')
+    reply = client_socket.recv(4096)
+    print(reply.decode())
 
-reply = client_socket.recv(4096)
-data = pd.read_xml(reply.decode())
-data.to_csv(outpath)
+
 
 
 
