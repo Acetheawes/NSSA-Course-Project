@@ -46,7 +46,8 @@ if (qtype == 'select' and len(sys.argv) == 3):
 elif (qtype == 'update' and len(sys.argv) == 2):
     print('sending update query')
     reply = client_socket.recv(4096)
-    print(get_response(reply.decode()))
+    status = get_response(reply.decode())
+    print(status)
 
 
 
