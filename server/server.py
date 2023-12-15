@@ -15,7 +15,7 @@ import os
 
 df = pd.read_csv('/home/ace/college/y2s1/nssa220/project/server/data.csv')
 
-#Defining Essential Functions
+# #Defining Essential Functions
 def get_values(root, parent, child):
     lst = []
     for element in (root.find(str(parent))).findall(str(child)):
@@ -48,6 +48,47 @@ def dataframe_to_xml(df, xml_file_path='output.xml'):
         xml_file.write(xml_data)
 
     return (os.path.abspath(xml_file_path))
+def get_update_columns(filename):
+    root = (ET.parse(filename)).getroot()
+    condition_col_list = get_values(root, 'columns', 'column')
+    condition_val_list = get_values(root, 'columns', 'value')
+    condition_dict = dict(zip(condition_col_list, condition_val_list))
+    
+    
+
+    return condition_dict
+def typechanger(dictionary):
+    final_dict = {}
+    intfields = {'PassengerId','Survived','Pclass','Age','SibSp','Parch'}
+    for key, val in dictionary.items():
+        if (key in intfields):
+            final_dict[key] = int(val)
+        elif (key == "Fare"):
+            final_dict[key] = float(val)
+        else: final_dict[key] = val
+    return final_dict
+
+def update_df(df, conditions, columns):
+    mask = pd.Series([True] * len(df))
+    for col, value in conditions.items():
+        mask &= (df[col] == value)
+    if mask.any():
+        df.loc[mask, list(columns.keys())] = list(columns.values())
+        return 'success'
+    else:
+        return 'failure'
+def generate_xml_response(status, xml_file_path='response.xml'):
+    root = ET.Element('response')
+    status_element = ET.SubElement(root, 'status')
+    status_element.text = status
+
+
+    tree = ET.ElementTree(root)
+
+
+    tree.write(xml_file_path)
+
+    return xml_file_path
 
 # with open('/home/ace/college/y2s1/nssa220/project/client/query1.xml') as query: 
 # query = '/home/ace/college/y2s1/nssa220/project/client/query1.xml'
@@ -81,16 +122,13 @@ while True:
         output = dataframe_to_xml(result)
         con.send(output.encode())
     elif (query_type == 'update'):
-        print('update type query')
-        msg = "sorry chad. We don't have update functionality yet"
-        con.send(msg.encode())
+        query_update_columns = get_update_columns(data)
+        updatestatus = update_df(df, query_conditions, query_update_columns)
+        xml_content = generate_xml_response(str(updatestatus))
+        xml_path = os.path.abspath(xml_content)
+        con.sendall(xml_path.encode())
 con.close()
-    # if (query_type == 'select'):
-    #     result = filter_columns(df, query_conditions, query_columns)
-    #     output = dataframe_to_xml(result)
-    #     con.send(output.encode())
-    # elif (query_type == 'update'):
-    #     pass
+  
 
 
 
